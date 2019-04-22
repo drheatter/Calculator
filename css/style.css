@@ -40,22 +40,23 @@ html {
 	grid-column: 5 / span 1;
 }
 
-#storedinput{
+#storedInput{
 	text-align: right;
 	height: 20px;
 	border-bottom: 2px solid black;
 	padding: 5px 5px 0px 5px;
 	overflow: hidden;
 	background-color: rgb(200, 200, 225);
-
+	font-family: "Lucida Console", Monaco, monospace
 }
 
-#currentinput{
+#currentInput{
 	text-align: right;
 	height: 80px;
 	font-size: 70px;
 	background-color: rgb(200, 200, 225);
 	border-bottom: 2px solid black;
+	font-family: "Lucida Console", Monaco, monospace;
 }
 
 button {
