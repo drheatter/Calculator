@@ -58,37 +58,52 @@ signButton.addEventListener('click', () => signPressed());
 const backspaceButton = document.querySelector('#backspaceButton');
 backspaceButton.addEventListener('click', () => backspacePressed());
 
-// Event listener for C button - clears input.
+// Event listener for clear buttons.
 const clearInputButton = document.querySelector('#clearInputButton');
 clearInputButton.addEventListener('click', () => clearInputPressed());
 
 const clearEntryButton = document.querySelector('#clearEntryButton');
 clearEntryButton.addEventListener('click', () => clearEntryPressed());
 
+//Event listener for equals button.
+const equalsButton = document.querySelector('#equalsButton');
+equalsButton.addEventListener('click', () => equalsPressed());
+
+// Declare global variable to store math operations.
+var operationArray = [];
+
 // Function for when number button is pressed.
 function numberPressed(newNumber) {
+	if (storedInput.innerHTML.includes('=')) {
+		storedInput.innerHTML = '';
+		currentInput.innerHTML = newNumber;
+		return;
+	}
 	if (currentInput.innerHTML == '0') {
 		currentInput.innerHTML = newNumber;
 		return;
 	}
 	currentInput.innerHTML = currentInput.innerHTML + String(newNumber);
+	if (currentInput.innerHTML.length > 15) {
+		alert("Ouch! Can you stop using so many digits?")
+		clearEntryPressed();
+	}
 	return;
 }
 
 // Function for when operation button is pressed.
 function operationPressed(newOperation) {
-	var fixInput = currentInput.innerHTML;
-	if (fixInput.charAt(fixInput.length - 1) == '.') {
-		fixInput = fixInput.replace('.','');
-	}
-	if (storedInput.innerHTML == '') {
-		storedInput.innerHTML = fixInput + newOperation;
-		currentInput.innerHTML = '0';
-		return;
-	}
+	if (storedInput.innerHTML.includes('=')) storedInput.innerHTML = '';
+	newInput = getInput();
 	storedInput.innerHTML = storedInput.innerHTML + 
-		fixInput + newOperation;
-		currentInput.innerHTML = '0';
+		newInput + newOperation;
+	currentInput.innerHTML = '0';
+	operationArray.push(newInput);
+	operationArray.push(newOperation);
+	if (storedInput.innerHTML.length > 68) {
+		alert("Whoa! Don't you think your input is a bit long? Do something shorter.");
+		clearEntryPressed();
+	}
 	return;
 }
 
@@ -114,7 +129,7 @@ function signPressed() {
 // Function for backspace
 function backspacePressed() {
 	if (currentInput.innerHTML == '0') return;
-	var newInput = currentInput.innerHTML.substring(0, 
+	let newInput = currentInput.innerHTML.substring(0, 
 		currentInput.innerHTML.length - 1);
 	if (newInput == '' || newInput == '-') {
 		currentInput.innerHTML = '0';
@@ -132,11 +147,93 @@ function clearInputPressed() {
 // Function for 'CE' button.
 function clearEntryPressed() {
 	storedInput.innerHTML = '';
+	operationArray = [];
 	clearInputPressed();
 	return;
 }
 
 // Function for equals button.
 function equalsPressed() {
-	// https://stackoverflow.com/questions/3559883/javascript-split-regex-question
+	let lastInput = getInput();
+	operationArray.push(lastInput);
+	if (operationArray.length == 0 || storedInput.innerHTML.includes('=')) {
+		storedInput.innerHTML = lastInput + '=';
+		return;
+	}
+	storedInput.innerHTML = storedInput.innerHTML + lastInput + '=';
+	// Do multiplication and division.
+	while (operationArray.includes('*') || operationArray.includes('/')) {
+		let nextOperationIndex = operationArray.findIndex((a) => {
+			return (a == '*') || (a == '/'); 
+		})
+		let newOutput = 0;
+		if (operationArray[nextOperationIndex] == '*') {
+			newOutput = multiply(Number(operationArray[nextOperationIndex - 1]),
+				Number(operationArray[nextOperationIndex + 1]));
+		}
+		else {
+			if (Number(operationArray[nextOperationIndex + 1]) == 0) {
+				alert("Hey you! Don't divide by zero, guy!");
+				clearEntryPressed();
+				return;
+			}
+			newOutput = divide(Number(operationArray[nextOperationIndex - 1]),
+				Number(operationArray[nextOperationIndex + 1]));
+		}
+		operationArray.splice(nextOperationIndex - 1, 3, String(newOutput));
+	}
+	// Do addition and subtraction.
+	while (operationArray.includes('+') || operationArray.includes('-')) {
+		let nextOperationIndex = operationArray.findIndex((a) => {
+			return (a == '+') || (a == '-'); 
+		})
+		let newOutput = 0;
+		if (operationArray[nextOperationIndex] == '+') {
+			newOutput = add(Number(operationArray[nextOperationIndex - 1]),
+				Number(operationArray[nextOperationIndex + 1]));
+		}
+		else {
+			newOutput = subtract(Number(operationArray[nextOperationIndex - 1]),
+				Number(operationArray[nextOperationIndex + 1]));
+		}
+		operationArray.splice(nextOperationIndex - 1, 3, String(newOutput));
+	}
+	// Display output (or error if program messes up - shouldn't happen).
+	if (operationArray.length > 1) {
+		alert("ERROR - Math didn't parse correctly!");
+		clearEntryPressed();
+		return;
+	}
+	if (operationArray[0].length > 15) {
+		operationArray[0] = operationArray[0].substring(0,15);
+	}
+	currentInput.innerHTML = operationArray[0];
+	operationArray = [];
+}
+
+// Function to get input and remove unneeded decimals. (eg 12.->12)
+function getInput() {
+	let fixInput = currentInput.innerHTML;
+	if (fixInput.charAt(fixInput.length - 1) == '.') {
+		fixInput = fixInput.replace('.','');
+	}
+	return fixInput
+}
+
+// Basic math functions.
+function add(a, b) {
+	return a + b;
+}
+
+function subtract(a, b) {
+	return a - b;
+}
+
+function multiply(a, b) {
+	return a * b;
+}
+
+function divide(a, b) {
+	if (b == 0) return 'ERROR';
+	return a / b;
 }
