@@ -69,6 +69,10 @@ clearEntryButton.addEventListener('click', () => clearEntryPressed());
 const equalsButton = document.querySelector('#equalsButton');
 equalsButton.addEventListener('click', () => equalsPressed());
 
+//Event listeners for keyboard support.
+window.addEventListener('keypress', keyPressed);
+window.addEventListener('keydown', nonCharKeyPressed);
+
 // Declare global variable to store math operations.
 var operationArray = [];
 
@@ -150,6 +154,7 @@ function equalsPressed() {
 	operationArray.push(lastInput);
 	if (operationArray.length == 0 || storedInput.innerHTML.includes('=')) {
 		storedInput.innerHTML = lastInput + '=';
+		operationArray = [];
 		return;
 	}
 	storedInput.innerHTML = storedInput.innerHTML + lastInput + '=';
@@ -225,4 +230,69 @@ function multiply(a, b) {
 function divide(a, b) {
 	if (b == 0) return 'ERROR';
 	return a / b;
+}
+
+// Functions to handle keyboard support.
+function keyPressed(e) {
+	let char = String.fromCharCode(event.which || event.keyCode);
+	switch (char) {
+		case '0':
+			numberPressed('0');
+			return;
+		case '1':
+			numberPressed('1');
+			return;
+		case '2':
+			numberPressed('2');
+			return;
+		case '3':
+			numberPressed('3');
+			return;
+		case '4':
+			numberPressed('4');
+			return;
+		case '5':
+			numberPressed('5');
+			return;
+		case '6':
+			numberPressed('6');
+			return;
+		case '7':
+			numberPressed('7');
+			return;
+		case '8':
+			numberPressed('8');
+			return;
+		case '9':
+			numberPressed('9');
+			return;
+		case '=':
+			equalsPressed();
+			return;
+		case '+':
+			operationPressed('+');
+			return;
+		case '-':
+			operationPressed('-');
+			return;
+		case '*':
+			operationPressed('*');
+			return;
+		case '/':
+			operationPressed('/');
+			return;
+		case '.':
+			decimalPressed();
+			return;
+		default:
+			return;
+	}
+}
+
+function nonCharKeyPressed(e) {
+	let key = event.which || event.keyCode;
+	console.log(key);
+	if (key == 8) backspacePressed();
+	if (key == 13) equalsPressed();
+	return;
 }
