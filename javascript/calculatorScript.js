@@ -84,10 +84,6 @@ function numberPressed(newNumber) {
 		return;
 	}
 	currentInput.innerHTML = currentInput.innerHTML + String(newNumber);
-	if (currentInput.innerHTML.length > 15) {
-		alert("Ouch! Can you stop using so many digits?")
-		clearEntryPressed();
-	}
 	return;
 }
 
@@ -100,10 +96,6 @@ function operationPressed(newOperation) {
 	currentInput.innerHTML = '0';
 	operationArray.push(newInput);
 	operationArray.push(newOperation);
-	if (storedInput.innerHTML.length > 68) {
-		alert("Whoa! Don't you think your input is a bit long? Do something shorter.");
-		clearEntryPressed();
-	}
 	return;
 }
 
@@ -203,9 +195,6 @@ function equalsPressed() {
 		alert("ERROR - Math didn't parse correctly!");
 		clearEntryPressed();
 		return;
-	}
-	if (operationArray[0].length > 15) {
-		operationArray[0] = operationArray[0].substring(0,15);
 	}
 	currentInput.innerHTML = operationArray[0];
 	operationArray = [];

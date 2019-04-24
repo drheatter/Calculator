@@ -47,16 +47,19 @@ html {
 	padding: 5px 5px 0px 5px;
 	overflow: hidden;
 	background-color: rgb(200, 200, 225);
-	font-family: "Lucida Console", Monaco, monospace
+	font-family: "Lucida Console", Monaco, monospace;
+	max-width: 100%;
 }
 
 #currentInput{
 	text-align: right;
 	height: 80px;
-	font-size: 70px;
+	font-size: 65px;
 	background-color: rgb(200, 200, 225);
 	border-bottom: 2px solid black;
 	font-family: "Lucida Console", Monaco, monospace;
+	max-width: 100%;
+	overflow: auto;
 }
 
 button {
